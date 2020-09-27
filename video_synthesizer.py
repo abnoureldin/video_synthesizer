@@ -27,7 +27,7 @@ pygame.init()
 
 if args.f:
 	screenWidth, screenHeight = 1024, 768
-	screen = pygame.display.set_mode((screenWidth, screenHeight), pygame.FULLSCREEN | pygame.HWSURF | pygame.DOUBLEBUF)
+	screen = pygame.display.set_mode((screenWidth, screenHeight), pygame.FULLSCREEN | pygame.HWSURFACE | pygame.DOUBLEBUF)
 
 else:
 	screenWidth, screenHeight = 800, 800
@@ -104,7 +104,30 @@ def draw():
 
 
 
+def get_onsets():
+    while True:
+        try:
+            buffer_size = 2048
+            audiobuffer = stream.read(buffer_size, exception_on_overflow=False)
+            signal = np.fromstring(audiobuffer, dtype=np.float32)
 
+
+            if onset(signal):
+                q.put(True)
+
+        except KeyboardInterrupt:
+            print("*** Ctrl+C pressed, exiting")
+            break
+
+
+t = Thread(target=get_onsets, args=())
+t.daemon = True
+t.start()
+
+draw_pygame()
+stream.stop_stream()
+stream.close()
+pygame.display.quit()
 
 
 
