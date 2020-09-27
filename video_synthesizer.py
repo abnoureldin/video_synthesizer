@@ -124,7 +124,7 @@ t = Thread(target=get_onsets, args=())
 t.daemon = True
 t.start()
 
-draw_pygame()
+draw()
 stream.stop_stream()
 stream.close()
 pygame.display.quit()
