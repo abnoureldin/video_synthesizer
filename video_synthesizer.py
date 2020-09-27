@@ -74,6 +74,33 @@ onset = aubio.onset("default", win_s, hop_s, samplerate)
 
 q = queue.Queue()
 
+def draw():
+	running = True
+	while running:
+		key = pygame.key.get_pressed()
+
+		if key[pygame.K_q]:
+			running = False
+		for event in pygame.event.get():
+			if event.type == pygame.QUIT:
+				running = False
+
+		if not q.empty():
+			b = q.get()
+			newCircle = Circle(random.randint(0, screenWidth), random.randint(0, screenHeight),
+				random.choice(colours), 700)
+			circleList.append(newCircle)
+
+		screen.fill(black)
+		for place, circle in enumerate(circleList):
+			if circle.size < 1:
+				circleList.pop(place)
+			else:
+				pygame.draw.circle(screen, circle.colour, (circle.x,circle.y), circle.size)
+			circle.shrink()
+
+			pygame.display.flip()
+			clock.tick(90)
 
 
 
